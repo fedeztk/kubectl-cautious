@@ -57,9 +57,8 @@ at $HOME/.kube/cautious.yaml after running the plugin for the first time. Suppor
 
 func InitAndExecute() {
 	if err := RootCmd().Execute(); err != nil {
-		// log only if the error is a kubectl error
-		// TODO: non funziona come atteso
-		if errors.As(err, &plugin.KubectlError{}) {
+		// log only if the error is not a kubectl error
+		if errors.Is(err, plugin.ErrKubectl) {
 			os.Exit(1)
 		}
 		log.Fatal(err)

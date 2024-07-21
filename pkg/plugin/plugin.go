@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,13 +12,7 @@ import (
 	"github.com/fedeztk/kubectl-cautious/pkg/config"
 )
 
-type KubectlError struct {
-	Err error
-}
-
-func (e KubectlError) Error() string {
-	return e.Err.Error()
-}
+var ErrKubectl = errors.New("kubectl error")
 
 func RunPlugin(conf *config.Config, args []string) error {
 	kubeconfig, err := getKubeconfigPath()
@@ -37,7 +32,7 @@ func RunPlugin(conf *config.Config, args []string) error {
 			if action.DryRun {
 				log.Info("Performing dry run")
 				err := execKubectl(append(args, "--dry-run=client"))
-				if err.Err != nil {
+				if err != nil {
 					return err
 				}
 			}
@@ -87,12 +82,15 @@ func getActionsForContextInArgs(currentCtx string, conf *config.Config, args []s
 	return actionsInArgs
 }
 
-func execKubectl(args []string) KubectlError {
+func execKubectl(args []string) error {
 	cmd := exec.Command("kubectl", args...)
 	// preserve stdin so that kubectl can apply -f -
 	cmd.Stdin = os.Stdin
 	output, err := cmd.CombinedOutput()
 	fmt.Print(string(output))
 
-	return KubectlError{Err: err}
+	if err != nil {
+		return ErrKubectl
+	}
+	return nil
 }
