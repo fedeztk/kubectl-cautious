@@ -16,6 +16,7 @@ builds:
       - CGO_ENABLED=0
       - GO111MODULE=on
     main: cmd/plugin/main.go
+    binary: cautious
     ldflags:
       - -s -w 
       # - -X github.com/fedeztk/kubectl-cautious/pkg/version.version={{ .Version }}

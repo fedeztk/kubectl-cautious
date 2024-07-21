@@ -18,7 +18,7 @@ spec:
         - darwin
         - linux
     {{addURIAndSha "https://github.com/fedeztk/kubectl-cautious/archive/{{ .TagName }}.tar.gz" .TagName }}
-    bin: kubectl-cautious
+    bin: cautious
 
   - selector:
       matchLabels:
