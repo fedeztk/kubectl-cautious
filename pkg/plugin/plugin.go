@@ -2,31 +2,97 @@ package plugin
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"regexp"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"k8s.io/client-go/kubernetes"
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/log"
+	"github.com/fedeztk/kubectl-cautious/pkg/config"
 )
 
-func RunPlugin(configFlags *genericclioptions.ConfigFlags, outputCh chan string) error {
-	config, err := configFlags.ToRESTConfig()
+type KubectlError struct {
+	Err error
+}
+
+func (e KubectlError) Error() string {
+	return e.Err.Error()
+}
+
+func RunPlugin(conf *config.Config, args []string) error {
+	kubeconfig, err := getKubeconfigPath()
 	if err != nil {
-		return fmt.Errorf("failed to read kubeconfig: %w", err)
+		return err
 	}
 
-	clientset, err := kubernetes.NewForConfig(config)
+	currentCtx, err := getContext(kubeconfig)
 	if err != nil {
-		return fmt.Errorf("failed to create clientset: %w", err)
+		return err
 	}
 
-	namespaces, err := clientset.CoreV1().Namespaces().List(metav1.ListOptions{})
-	if err != nil {
-		return fmt.Errorf("failed to list namespaces: %w", err)
+	confirm := true
+	if actions := getActionsForContextInArgs(currentCtx, conf, args); actions != nil {
+		log.Warn("Operating in", "context", currentCtx)
+		for _, action := range actions {
+			if action.DryRun {
+				log.Info("Performing dry run")
+				err := execKubectl(append(args, "--dry-run=client"))
+				if err.Err != nil {
+					return err
+				}
+			}
+		}
+		huh.NewConfirm().
+			Title("Would you like to proceed?").
+			Value(&confirm).WithTheme(huh.ThemeBase16()).Run()
+	} // else no actions for this context
+
+	if !confirm { // do not run if user does not confirm
+		return nil
 	}
 
-	for _, namespace := range namespaces.Items {
-		outputCh <- fmt.Sprintf("Namespace %s", namespace.Name)
-	}
+	return execKubectl(args)
+}
 
+// returns actions associated with the current context
+func getActionsForContext(currentCtx string, conf *config.Config) []config.Action {
+	for _, ctx := range conf.Contexts {
+		// chekc if regex ctx.Name matches currentCtx
+		if regexp.MustCompile(ctx.Name).MatchString(currentCtx) {
+			return ctx.Actions
+		}
+	}
 	return nil
+}
+
+// returns actions present in args
+func checkActionInArgs(action string, args []string) bool {
+	for _, arg := range args {
+		if arg == action {
+			return true
+		}
+	}
+	return false
+}
+
+// getActionsForContextInArgs returns actions for the current context that are in args
+func getActionsForContextInArgs(currentCtx string, conf *config.Config, args []string) []config.Action {
+	actionsForCtx := getActionsForContext(currentCtx, conf)
+	var actionsInArgs []config.Action
+	for _, action := range actionsForCtx {
+		if checkActionInArgs(action.Name, args) {
+			actionsInArgs = append(actionsInArgs, action)
+		}
+	}
+	return actionsInArgs
+}
+
+func execKubectl(args []string) KubectlError {
+	cmd := exec.Command("kubectl", args...)
+	// preserve stdin so that kubectl can apply -f -
+	cmd.Stdin = os.Stdin
+	output, err := cmd.CombinedOutput()
+	fmt.Print(string(output))
+
+	return KubectlError{Err: err}
 }

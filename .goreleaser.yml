@@ -1,10 +1,10 @@
-project_name: {{ .PluginName }}
+project_name: cautious
 release:
   github:
-    owner: {{ .Owner }}
-    name: {{ .Repo }}
+    owner: fedeztk
+    name: kubectl-cautious
 builds:
-  - id: {{ .PluginName }}
+  - id: cautious
     goos:
     - linux
     - windows
@@ -16,13 +16,15 @@ builds:
       - CGO_ENABLED=0
       - GO111MODULE=on
     main: cmd/plugin/main.go
-    ldflags: -s -w
-      -X github.com/{{ .Owner }}/{{ .Repo }}/pkg/version.version=
+    ldflags:
+      - -s -w 
+      # - -X github.com/fedeztk/kubectl-cautious/pkg/version.version={{ .Version }}
+      # - -X github.com/fedeztk/kubectl-cautious/pkg/version.commit={{ .Commit }}
 archives:
-  - id: {{ .PluginName }}
+  - id: cautious
     builds:
-    - {{ .PluginName }}
-    name_template: {{ `"{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"` }}
+    - cautious
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
     - goos: windows
       format: zip
