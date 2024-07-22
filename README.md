@@ -8,6 +8,12 @@ Supports regexes and is configured via a yaml file under ~/.kube.
 
 This plugin is thought to be used in production environments where you want to be extra cautious when running kubectl commands. It allows pattern matching for contexts and actions, and it can be configured to run in dry-run mode.
 
+
+https://github.com/user-attachments/assets/0934e030-bdac-49b9-8d8c-69292d4f416e
+
+
+
+
 ## Quick Start
 
 Install using krew:
