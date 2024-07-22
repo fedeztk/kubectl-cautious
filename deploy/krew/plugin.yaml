@@ -15,42 +15,22 @@ spec:
         os: linux
         arch: amd64
     {{addURIAndSha "https://github.com/fedeztk/kubectl-cautious/releases/download/{{ .TagName }}/cautious_linux_amd64.tar.gz" .TagName }}
-    files:
-    - from: "./cautious"
-      to: "."
-    - from: LICENSE
-      to: "."
     bin: "cautious"
   - selector:
       matchLabels:
         os: darwin
         arch: amd64
     {{addURIAndSha "https://github.com/fedeztk/kubectl-cautious/releases/download/{{ .TagName }}/cautious_darwin_amd64.tar.gz" .TagName }}
-    files:
-    - from: "./cautious"
-      to: "."
-    - from: LICENSE
-      to: "."
     bin: "cautious"
   - selector:
       matchLabels:
         os: darwin
         arch: arm64
     {{addURIAndSha "https://github.com/fedeztk/kubectl-cautious/releases/download/{{ .TagName }}/cautious_darwin_arm64.tar.gz" .TagName }}
-    files:
-    - from: "./cautious"
-      to: "."
-    - from: LICENSE
-      to: "."
     bin: "cautious"
   - selector:
       matchLabels:
         os: windows
         arch: amd64
     {{addURIAndSha "https://github.com/fedeztk/kubectl-cautious/releases/download/{{ .TagName }}/cautious_windows_amd64.zip" .TagName }}
-    files:
-    - from: "/cautious.exe"
-      to: "."
-    - from: LICENSE
-      to: "."
     bin: "cautious.exe"

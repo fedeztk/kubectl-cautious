@@ -20,7 +20,7 @@ jobs:
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Update new version in krew-index
-      #   uses: rajatjindal/krew-release-bot@v0.0.38
-      #   with:
-      #     krew_template_file: deploy/krew/plugin.yaml
+      - name: Update new version in krew-index
+        uses: rajatjindal/krew-release-bot@v0.0.38
+        with:
+          krew_template_file: deploy/krew/plugin.yaml
