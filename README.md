@@ -52,3 +52,11 @@ contexts:
         - name: delete
           dry-run: true
 ```
+
+## Acknowledgements
+
+This plugin was inspired by [kubectl-guardrails](https://github.com/theelderbeever/kubectl-guardrails/tree/main), which is an awesome project written in `rust` that provides a similar functionality.
+
+I decided to rewrite this plugin in `go`, adding two main features:
+- Support for regexes in context names
+- Preservation of standard input for kubectl commands (useful for `apply -f -`)
