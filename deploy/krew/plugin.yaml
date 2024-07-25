@@ -3,7 +3,7 @@ kind: Plugin
 metadata:
   name: cautious
 spec:
-  shortDescription: Cautiously operate inside clusters
+  shortDescription: Prevents accidental kubectl commands for contexts
   homepage: https://github.com/fedeztk/kubectl-cautious
   description: |
     Cautiously run kubectl commands, no more accidental deletions!
