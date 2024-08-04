@@ -1,6 +1,6 @@
 module github.com/fedeztk/kubectl-cautious
 
-go 1.22.5
+go 1.22
 
 require (
 	github.com/charmbracelet/huh v0.5.1
