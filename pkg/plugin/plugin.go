@@ -12,8 +12,10 @@ import (
 	"github.com/fedeztk/kubectl-cautious/pkg/config"
 )
 
+// ErrKubectl is returned when kubectl returns an error
 var ErrKubectl = errors.New("kubectl error")
 
+// RunPlugin runs the plugin with the given configuration and arguments for kubectl
 func RunPlugin(conf *config.Config, args []string) error {
 	kubeconfig, err := getKubeconfigPath()
 	if err != nil {

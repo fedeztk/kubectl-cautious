@@ -16,20 +16,24 @@ import (
 //       - name: delete
 //         dry-run: true
 
+// Config holds the Contexts for the plugin
 type Config struct {
 	Contexts []Context
 }
 
+// Context holds the configuration for a specific context
 type Context struct {
 	Name    string
 	Actions []Action
 }
 
+// Action represents a kube action and whether it should be a dry-run
 type Action struct {
 	Name   string
 	DryRun bool `mapstructure:"dry-run" yaml:"dry-run"`
 }
 
+// ReadConfig reads the cautious.yaml
 func ReadConfig() (*Config, error) {
 	viper.SetConfigName("cautious")                                // name of config file (without extension)
 	viper.SetConfigType("yaml")                                    // REQUIRED if the config file does not have the extension in the name

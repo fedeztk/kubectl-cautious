@@ -1,6 +1,7 @@
 # kubectl-cautious 
 
-<!-- # TODO: add exhaustive description -->
+[![go report](https://goreportcard.com/badge/github.com/fedeztk/kubectl-cautious)](https://goreportcard.com/report/github.com/fedeztk/kubectl-cautious)
+![CI/CD](https://github.com/fedeztk/kubectl-cautious/actions/workflows/go.yaml/badge.svg)
 
 Cautiously run kubectl commands, no more accidental deletions!
 

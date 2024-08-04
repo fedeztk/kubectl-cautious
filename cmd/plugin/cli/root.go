@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// RootCmd returns the root command for the plugin
 func RootCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   `cautious [kubectl command]`,
@@ -55,6 +56,7 @@ at $HOME/.kube/cautious.yaml after running the plugin for the first time. Suppor
 	return cmd
 }
 
+// InitAndExecute initializes the plugin and executes the root
 func InitAndExecute() {
 	if err := RootCmd().Execute(); err != nil {
 		// log only if the error is not a kubectl error
