@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 	"regexp"
@@ -86,11 +85,11 @@ func getActionsForContextInArgs(currentCtx string, conf *config.Config, args []s
 
 func execKubectl(args []string) error {
 	cmd := exec.Command("kubectl", args...)
-	// preserve stdin so that kubectl can apply -f -
-	cmd.Stdin = os.Stdin
-	output, err := cmd.CombinedOutput()
-	fmt.Print(string(output))
 
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
 	if err != nil {
 		return ErrKubectl
 	}
